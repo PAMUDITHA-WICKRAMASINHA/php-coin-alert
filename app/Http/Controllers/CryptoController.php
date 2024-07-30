@@ -42,7 +42,10 @@ class CryptoController extends Controller
             $alerts = $this->indicatorService->generateAlerts($data, $sma, $ema, $rsi, $bollingerBands);
 
             $decision = $this->analyzeAlerts($alerts, $symbol);
-            $this->sendTelegramMessage($symbol . "\nDecision: " . $decision);
+
+            if($decision != 'hold'){
+                $this->sendTelegramMessage($symbol . "\nDecision: " . $decision);
+            }
 
             $results[] = [
                 'symbol' => $symbol,
