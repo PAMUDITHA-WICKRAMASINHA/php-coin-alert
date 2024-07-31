@@ -45,7 +45,7 @@ class ProcessTradingSignals extends Command
                     continue;
                 }
 
-                Cache::put($cacheKey, $signal, now()->addMinutes(30));
+                Cache::put($cacheKey, $signal, now()->addHour());
 
                 $message = ucfirst($signal['type']) . " signal for {$symbol} generated at price " . $signal['price'];
                 $this->telegramService->sendMessage($message);
