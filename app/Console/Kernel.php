@@ -25,9 +25,10 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Schedule the command to run hourly
-        $schedule->command('crypto:get-alerts')->everyMinute();
+        $schedule->command('trading:process-signals')->everyMinute();
     }
+
+    
 
     /**
      * Register the commands for the application.

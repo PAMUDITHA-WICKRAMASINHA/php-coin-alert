@@ -10,31 +10,34 @@ class BinanceService
 
     public function __construct()
     {
-        $this->client = new Client([
-            'base_uri' => 'https://api.binance.com',
-        ]);
+        $this->client = new Client();
     }
 
-    public function getPrice($symbol)
+    public function getCandlestickData($symbol, $interval = "1m", $limit = 100)
     {
-        $response = $this->client->get("/api/v3/ticker/price", [
-            'query' => ['symbol' => $symbol]
-        ]);
-
-        return json_decode($response->getBody()->getContents(), true);
-    }
-
-    public function getHistoricalData($symbol, $interval = '4h', $limit = 100)
-    {
-        $response = $this->client->get("/api/v3/klines", [
+        $url = "https://api.binance.com/api/v3/klines";
+        $response = $this->client->get($url, [
             'query' => [
                 'symbol' => $symbol,
                 'interval' => $interval,
-                'limit' => $limit,
-            ],
+                'limit' => $limit
+            ]
         ]);
 
-        return json_decode($response->getBody()->getContents(), true);
-    }
+        $candlesticks = json_decode($response->getBody()->getContents(), true);
 
+        $formattedData = [];
+        foreach ($candlesticks as $candle) {
+            $formattedData[] = [
+                'open' => $candle[1],
+                'close' => $candle[4],
+                'high' => $candle[2],
+                'low' => $candle[3],
+                'volume' => $candle[5],
+                'time' => $candle[0],
+            ];
+        }
+
+        return $formattedData;
+    }
 }
